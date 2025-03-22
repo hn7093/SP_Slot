@@ -7,11 +7,7 @@ public class UIManager : MonoBehaviour
 {
     private static UIManager _instance;
     public static UIManager Instance { get { return _instance; } private set { _instance = value; } }
-    [SerializeField] UIInventory UIInventory { get; }
-    [SerializeField] UIStatus UIStatus { get; }
-    [SerializeField] UIMainMenu UIMainMenu { get; }
-
-    private IUIPage currentPage;
+    [SerializeField ] public UIMainMenu UIMainMenu;
     void Awake()
     {
         if (_instance == null)
@@ -23,13 +19,15 @@ public class UIManager : MonoBehaviour
             Destroy(gameObject);
         }
     }
-    public void ChangePage(IUIPage newPage)
+    public void ActivateUIMainMenu(bool activate)
     {
-        if(currentPage != newPage)
+        if(activate)
         {
-            currentPage?.Exit();
-            currentPage = newPage;
-            currentPage?.Enter();
+            UIMainMenu.Enter();
+        }
+        else
+        {
+            UIMainMenu.Exit();
         }
     }
 }

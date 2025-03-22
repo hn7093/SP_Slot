@@ -1,0 +1,30 @@
+{
+  "Items": [
+    {
+      "key": 0,
+      "job": 1,
+      "characterName": "우라라",
+      "level": 17,
+      "exp": 33,
+      "descript": "마법쓰는 마머사",
+      "gold": 42313,
+      "attack": 150,
+      "defense": 40,
+      "health": 100,
+      "critical": 15
+    },
+    {
+      "key": 1,
+      "job": 0,
+      "characterName": "김수한무",
+      "level": 7,
+      "exp": 3,
+      "descript": "김수한무 거북이와 두루미 삼천갑자 동방삭 치치카포 사리사리센타 워리워리 세브리깡 무두셀케인에 담벼락 담벼락에 서생원 서생원에 고양이 고양이엔 바둑이 바둑이는 돌돌이",
+      "gold": 456,
+      "attack": 44,
+      "defense": 12,
+      "health": 60,
+      "critical": 10
+    }
+  ]
+}
