@@ -9,7 +9,7 @@ public enum Job
     Magician,
 }
 [Serializable]
-public struct CharacterData
+public class CharacterData
 {
     public int key;
     public Job job;
@@ -23,11 +23,13 @@ public struct CharacterData
     public int health;
     public int critical;
 }
+[Serializable]
 public class Character
 {
-    public CharacterData characterData;
+    public CharacterData characterData{get; private set;}
     public Character(CharacterData data)
     {
+        characterData = new CharacterData();
         characterData.key = data.key;
         characterData.job = data.job;
         characterData.characterName = data.characterName;
@@ -38,7 +40,6 @@ public class Character
         characterData.attack = data.attack;
         characterData.defense = data.defense;
         characterData.health = data.health;
-        Debug.Log(data.critical);
         characterData.critical = data.critical;
     }
 }

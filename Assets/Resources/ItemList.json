@@ -1,0 +1,52 @@
+{
+  "Items": [
+    {
+      "key": 1,
+      "name": "돌맹이",
+      "maxStack": 64,
+      "spritePath": "Sprite/stone",
+      "attack": 0,
+      "health": 0,
+      "defense": 0,
+      "critical": 0,
+      "price": 1,
+      "descript": "그냥 돌맹이"
+    },
+    {
+      "key": 1000,
+      "name": "한손검",
+      "maxStack": 1,
+      "spritePath": "Sprite/sword",
+      "attack": 20,
+      "health": 0,
+      "defense": 0,
+      "critical": 0,
+      "price": 10,
+      "descript": "휘드르지 좋은 한손 검"
+    },
+    {
+      "key": 2000,
+      "name": "작은 방패",
+      "maxStack": 1,
+      "spritePath": "Sprite/Shield",
+      "attack": 0,
+      "health": 0,
+      "defense": 20,
+      "critical": 0,
+      "price": 10,
+      "descript": "적당한 무기의 방패"
+    },
+    {
+      "key": 10000,
+      "name": "사과",
+      "maxStack": 64,
+      "spritePath": "Sprite/Apple",
+      "attack": 0,
+      "health": 0,
+      "defense": 0,
+      "critical": 0,
+      "price": 5,
+      "descript": "붉은 사과"
+    }
+  ]
+}
