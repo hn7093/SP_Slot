@@ -1,7 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 public class UISlot : MonoBehaviour
@@ -12,28 +11,26 @@ public class UISlot : MonoBehaviour
     private int index;
     public int key;
     public int count;
-    void Start()
+    void Awake()
     {
         button = GetComponent<Button>();
-        button.onClick.AddListener(Show);
+
     }
-    public void SetItem(int index, int key, int count)
+    public void SetCallback(UnityAction<int, int> callback)
+    {
+        button.onClick.AddListener(() => callback?.Invoke(index, key));
+    }
+    public void SetItem(int index, Item item, int count)
     {
         this.index = index;
-        this.key = key;
+        this.key = item.key;
         this.count = count;
         itemCount.text = count.ToString();
         itemImage.gameObject.SetActive(true);
-        Sprite sprite = GameManager.Instance.ItemManager.sprites[key];
-        itemImage.sprite = GameManager.Instance.ItemManager.sprites[key];
-
+        itemImage.sprite = item.sprite;
     }
-    public void RefreshUI()
+    public void RefreshUI(Item item)
     {
 
-    }
-    private void Show()
-    {
-        Debug.Log(index + ": " + key + " - " + count);
     }
 }

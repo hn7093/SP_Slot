@@ -42,4 +42,24 @@ public class Character
         characterData.health = data.health;
         characterData.critical = data.critical;
     }
+
+    public void UseItem(Item item)
+    {
+        if(item.IsConsumable())
+        {
+            Consume(item);
+        }
+        else if(item.IsEquip())
+        {
+            AutoEquip(item);
+        }
+    }
+    public void Consume(Item item)
+    {
+        Debug.Log("소비 : " + item.name);
+    }
+    public void AutoEquip(Item item)
+    {
+        Debug.Log("장착 : " + item.name);
+    }
 }

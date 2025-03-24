@@ -6,15 +6,15 @@ public class ItemManager
 {
     public Dictionary<int, Item> ItemInfo = new Dictionary<int, Item>();
     public Dictionary<int, ItemSlot> savedItems = new Dictionary<int, ItemSlot>();
-    public Dictionary<int, Sprite> sprites = new Dictionary<int, Sprite>();
+    //public Dictionary<int, Sprite> sprites = new Dictionary<int, Sprite>();
     public ItemManager()
     {
         // 아이템 정보 불러오기
         List<Item> dataList = LoadJsonData<Item>("ItemList");
         for (int i = 0; i < dataList.Count; i++)
         {
+            dataList[i].sprite = Resources.Load<Sprite>(dataList[i].spritePath);
             ItemInfo[dataList[i].key] = dataList[i];
-            sprites[dataList[i].key] = Resources.Load<Sprite>(dataList[i].spritePath);
         }
         
         // 저장정보 불러오기
