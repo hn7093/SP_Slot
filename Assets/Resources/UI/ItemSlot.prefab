@@ -264,6 +264,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemImage: {fileID: 1839942712838145464}
   itemCount: {fileID: 4203623229535410648}
+  outline: {fileID: 7554732552969135608}
   key: 0
   count: 0
 --- !u!114 &3906772084044135915
@@ -329,6 +330,7 @@ GameObject:
   - component: {fileID: 2354208061248701537}
   - component: {fileID: 2484639985226277628}
   - component: {fileID: 9002436966923449161}
+  - component: {fileID: 7554732552969135608}
   m_Layer: 5
   m_Name: ItemBackground
   m_TagString: Untagged
@@ -393,3 +395,18 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &7554732552969135608
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5852472298128308219}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e19747de3f5aca642ab2be37e372fb86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_EffectColor: {r: 0.17332679, g: 0.8962264, b: 0.36147425, a: 1}
+  m_EffectDistance: {x: 4, y: -4}
+  m_UseGraphicAlpha: 1

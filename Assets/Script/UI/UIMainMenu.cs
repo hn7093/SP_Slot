@@ -25,7 +25,7 @@ public class UIMainMenu : UIPage
     public override void Enter()
     {
         //animator.Play("UIMainMenu In");
-        Set(GameManager.Instance.Player.characterData);
+        Set(GameManager.Instance.Player.CharacterData);
         SetActivate(true);
     }
     public override void Exit()

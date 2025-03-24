@@ -15,7 +15,7 @@ public class UIStatus : UIPage
     public override void Enter()
     {
         //animator.Play("UIStatus In");
-        Set(GameManager.Instance.Player.characterData);
+        Set(GameManager.Instance.Player.CharacterData);
         SetActivate(true);
     }
 

@@ -37,18 +37,27 @@ public class UIManager : MonoBehaviour
     public void OpenPopup()
     {
         // 팝업창 열기
+        uiParent.gameObject.SetActive(true);
         var obj = Instantiate(UsePopUp, uiParent);
         if (obj.TryGetComponent<UIUsePopup>(out UIUsePopup popup))
         {
             nowPopup = popup;
         }
     }
-
-    public void SetPopup(int key, UnityAction callback = null)
+    public void ClosePopup()
     {
         if (nowPopup != null)
         {
-            nowPopup.Setup(key, callback);
+            uiParent.gameObject.SetActive(false);
+            nowPopup = null;
+        }
+    }
+
+    public void SetPopup(Item item, bool IsEquip, UnityAction callback = null)
+    {
+        if (nowPopup != null)
+        {
+            nowPopup.Setup(item, IsEquip, callback, ClosePopup);
         }
     }
 }

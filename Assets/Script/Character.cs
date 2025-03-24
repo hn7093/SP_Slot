@@ -26,40 +26,77 @@ public class CharacterData
 [Serializable]
 public class Character
 {
-    public CharacterData characterData{get; private set;}
+    public CharacterData CharacterData { get; private set; }
+    public Inventory Inventory { get; private set; }
+    public static int maxSize = 20;
     public Character(CharacterData data)
     {
-        characterData = new CharacterData();
-        characterData.key = data.key;
-        characterData.job = data.job;
-        characterData.characterName = data.characterName;
-        characterData.level = data.level;
-        characterData.exp = data.exp;
-        characterData.descript = data.descript;
-        characterData.gold = data.gold;
-        characterData.attack = data.attack;
-        characterData.defense = data.defense;
-        characterData.health = data.health;
-        characterData.critical = data.critical;
-    }
+        // 데이터 초기화
+        CharacterData = new CharacterData();
+        CharacterData.key = data.key;
+        CharacterData.job = data.job;
+        CharacterData.characterName = data.characterName;
+        CharacterData.level = data.level;
+        CharacterData.exp = data.exp;
+        CharacterData.descript = data.descript;
+        CharacterData.gold = data.gold;
+        CharacterData.attack = data.attack;
+        CharacterData.defense = data.defense;
+        CharacterData.health = data.health;
+        CharacterData.critical = data.critical;
 
-    public void UseItem(Item item)
-    {
-        if(item.IsConsumable())
+        // 인벤토리 초기화
+        Inventory = new Inventory(maxSize);
+        for (int i = 0; i < maxSize; i++)
         {
-            Consume(item);
-        }
-        else if(item.IsEquip())
-        {
-            AutoEquip(item);
+            // 해당 칸에 저장된 정보가 있으면 불러오기
+            if (GameManager.Instance.ItemManager.savedItems.ContainsKey(i))
+            {
+                // 저장된 정보 불러오기
+                ItemSlot savedItem = GameManager.Instance.ItemManager.savedItems[i];
+                if (savedItem != null)
+                {
+                    Additem(savedItem);
+                }
+            }
         }
     }
-    public void Consume(Item item)
+    public void Additem(ItemSlot savedItem)
     {
-        Debug.Log("소비 : " + item.name);
+        Inventory.slotList[savedItem.index] = savedItem;
     }
-    public void AutoEquip(Item item)
+    public void Consume(Item item, int index)
     {
-        Debug.Log("장착 : " + item.name);
+        if (item.health != 0) CharacterData.health += item.health;
+        if (item.attack != 0) CharacterData.attack += item.attack;
+        if (item.defense != 0) CharacterData.defense += item.defense;
+        if (item.critical != 0) CharacterData.critical += item.critical;
+
+        // 개수 감소
+        Inventory.slotList[index].count--;
+    }
+    public int AutoEquip(Item item, int index)
+    {
+        if (Inventory.slotList[index].equip)
+        {
+            // 해제
+            // 능력 적용
+            if (item.health != 0) CharacterData.health -= item.health;
+            if (item.attack != 0) CharacterData.attack -= item.attack;
+            if (item.defense != 0) CharacterData.defense -= item.defense;
+            if (item.critical != 0) CharacterData.critical -= item.critical;
+            
+        }
+        else
+        {
+            // 장착
+            // 능력 적용
+            if (item.health != 0) CharacterData.health += item.health;
+            if (item.attack != 0) CharacterData.attack += item.attack;
+            if (item.defense != 0) CharacterData.defense += item.defense;
+            if (item.critical != 0) CharacterData.critical += item.critical;
+        }
+        // 장착/해제 적용, 바뀐 슬롯 인덱스 반환
+        return Inventory.AutoEquip(index);
     }
 }

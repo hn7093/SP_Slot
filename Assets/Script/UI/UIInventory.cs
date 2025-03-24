@@ -6,20 +6,6 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 
-[Serializable]
-public class ItemSlot
-{
-    public int index;
-    public int key;
-    public int count;
-    public bool equip;
-
-    public ItemSlot(int key, int count)
-    {
-        this.key = key;
-        this.count = count;
-    }
-}
 public class UIInventory : UIPage
 {
     [SerializeField] Button closeButton;
@@ -30,58 +16,68 @@ public class UIInventory : UIPage
     [SerializeField] TextMeshProUGUI slotNowText;
 
     public static int maxSize = 20;
-    private List<ItemSlot> ItemList = new List<ItemSlot>(maxSize); // 아이템 슬롯 UI
-    private List<UISlot> slotList = new List<UISlot>(maxSize);
-
+    private List<UISlot> ItemList = new List<UISlot>(maxSize); // 아이템 슬롯 UI
+    private Character player;
     private int tempIndex;
     private int tempKey;
-
-
     Animator animator;
+
     void Start()
     {
-        ItemList = new List<ItemSlot>(maxSize);
-        slotList = new List<UISlot>(maxSize);
+        ItemList = new List<UISlot>(maxSize);
+        player = GameManager.Instance.Player;
 
         for (int i = 0; i < maxSize; i++)
         {
             var slotui = Instantiate(SlotPrefab, ContentParent);
-            slotList.Add(slotui.GetComponent<UISlot>());
+            ItemList.Add(slotui.GetComponent<UISlot>());
             // 해당 칸에 저장된 정보가 있으면 불러오기
-            if (GameManager.Instance.ItemManager.savedItems.ContainsKey(i))
+            if (player.Inventory.slotList.ContainsKey(i))
             {
                 // 저장된 정보 불러오기
-                ItemSlot savedItem = GameManager.Instance.ItemManager.savedItems[i];
+                ItemSlot savedItem = player.Inventory.slotList[i];
                 if (savedItem != null)
                 {
                     Item item = GameManager.Instance.ItemManager.ItemInfo[savedItem.key];
-                    ItemList.Add(new ItemSlot(item.key, savedItem.count));
-                    slotList[i].SetItem(i, item, savedItem.count);
-                    slotList[i].SetCallback(Show);
+                    ItemList[i].SetItem(i, item, savedItem.count, savedItem.equip);
+                    ItemList[i].SetCallback(Show);
                 }
-            }
-            else
-            {
-                ItemList.Add(new ItemSlot(0, 0));
             }
         }
     }
     // 팝업 생성 호출
     private void Show(int index, int key)
     {
-        // -1 은 설정 안됨
+        // 0 은 설정 안됨
         if (key != 0)
         {
+            Item item = GameManager.Instance.ItemManager.ItemInfo[key];
             tempIndex = index;
-            tempKey = key;
+            tempKey = item.key;
+            bool IsEquip = player.Inventory.slotList[tempIndex].equip;
             UIManager.Instance.OpenPopup();
-            UIManager.Instance.SetPopup(key, UseItem);
+            UIManager.Instance.SetPopup(item, IsEquip, UseItem);
         }
     }
     private void UseItem()
     {
         Item item = GameManager.Instance.ItemManager.ItemInfo[tempKey];
-        GameManager.Instance.Player.UseItem(item);
+        // 종류별 사용
+        if (ItemLogic.IsConsumable(item.key))
+        {
+            GameManager.Instance.Player.Consume(item, tempIndex);
+            // UI 갱신
+            ItemList[tempIndex].RefreshUI(player.Inventory.slotList[tempIndex]);
+        }
+        else if (ItemLogic.IsEquip(item.key))
+        {
+            int prev = GameManager.Instance.Player.AutoEquip(item, tempIndex);
+            // UI 갱신
+            ItemList[tempIndex].RefreshUI(player.Inventory.slotList[tempIndex]);
+            // 교환 대비 이전 슬롯도 갱신
+            if(tempIndex != prev)
+                ItemList[prev].RefreshUI(player.Inventory.slotList[prev]);
+        }
     }
     public override void Enter()
     {

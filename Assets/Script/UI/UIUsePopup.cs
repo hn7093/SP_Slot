@@ -15,32 +15,32 @@ public class UIUsePopup : MonoBehaviour
     [SerializeField] private Button useButton;
     [SerializeField] private Button closeButton;
     UnityAction useAction;
+    UnityAction closeAction;
 
     void Awake()
     {
         useButton.onClick.AddListener(Use);
         closeButton.onClick.AddListener(Close);
     }
-    public void Setup(int key, UnityAction callback = null)
+    public void Setup(Item item, bool IsEquip, UnityAction callback = null, UnityAction closeCallback = null)
     {
         // key로 아이템 정보 세팅
-        Item item = GameManager.Instance.ItemManager.ItemInfo[key];
         itemImage.sprite = item.sprite;
         string stat = "";
         string descript = item.descript;
         // 아이템 종류별로 버튼 세팅
-        if(item.IsConsumable())
+        if(ItemLogic.IsConsumable(item.key))
         {
             useButton.gameObject.SetActive(true);
             useText.text = "사용하기";
             
         }
-        else if(item.IsEquip())
+        else if(ItemLogic.IsEquip(item.key))
         {
             useButton.gameObject.SetActive(true);
-            useText.text = "장착하기";
+            useText.text = IsEquip ? "해제하기" :"장착하기";
         }
-        else if(item.IsResource())
+        else if(ItemLogic.IsResource(item.key))
         {
             useButton.gameObject.SetActive(false);
             useText.text = "";
@@ -49,15 +49,17 @@ public class UIUsePopup : MonoBehaviour
         descriptText.text = descript;
         // 이벤트 등록
         useAction += callback;
+        closeAction += closeCallback;
     }
     public void Use()
     {
         useAction?.Invoke();
+        closeAction?.Invoke();
         Destroy(gameObject);
     }
     public void Close()
     {
-        useAction = null;
+        closeAction?.Invoke();
         Destroy(gameObject);
     }
 }
