@@ -3,88 +3,50 @@ using System.Collections.Generic;
 public class Inventory
 {
     public Dictionary<int, ItemSlot> slotList;
-    private int mainHandIndex; // 1000
-    private int mainKey;
-    private int subHandIndex; // 2000
-    private int subKey;
+
+    // key: 부위, value: 슬롯 인덱스
+    private Dictionary<int, int> equippedItems = new Dictionary<int, int>();
     public Inventory(int size)
     {
         slotList = new Dictionary<int, ItemSlot>(size);
-        mainHandIndex = -1;
-        subHandIndex = -1;
     }
     public int AutoEquip(int newIndex)
     {
+        // 슬롯의 아이템 키 값
         int newKey = slotList[newIndex].key;
-        //int mainKey = 
-        // 빈 공간에 장착 - 메인
-        if (mainHandIndex == -1 && ItemLogic.IsEquip(newKey) && newKey / 1000 == 1)
+
+        if (!ItemLogic.IsEquip(newKey)) return -1; // 장비가 아닐 경우
+        // 부위 코드 추출
+        int part = newKey / 1000;
+
+        // 해당 부위에 장비가 있는지 확인
+        if (equippedItems.TryGetValue(part, out int equippedIndex))
         {
-            Debug.Log("메인 빈곳에 새로 추가");
-            slotList[newIndex].equip = true;
-            mainHandIndex = newIndex;
-            mainKey = newKey;
-            return newIndex;
-        }
-        else if (subHandIndex == -1 && ItemLogic.IsEquip(newKey) && newKey / 1000 == 2)
-        {
-            // 빈 공간에 장착 - 서브
-            Debug.Log("서브 새로 장착");
-            slotList[newIndex].equip = true;
-            subHandIndex = newIndex;
-            subKey = newKey;
-            return newIndex;
-        }
-        // 부위 판별 - 메인
-        else if (ItemLogic.IsSamePart(mainKey, newKey))
-        {
-            if (mainHandIndex == newIndex)
+            if (equippedIndex == newIndex)
             {
-                // 같은 슬롯 = 해제
-                Debug.Log("메인 해제");
-                slotList[mainHandIndex].equip = false;
-                mainHandIndex = -1;
-                mainKey = 0;
+                // 같은 슬롯이면 해제
+                Debug.Log($"부위 {part} 장비 해제");
+                slotList[equippedIndex].equip = false;
+                equippedItems.Remove(part);
                 return newIndex;
             }
             else
             {
-                // 다른 슬롯= 교체, 
-                // 기본 해제, 새로 장착
-                Debug.Log("메인 교환");
-                int prev = mainHandIndex;
-                slotList[mainHandIndex].equip = false;
+                // 다른 슬롯의 장비와 교체
+                Debug.Log($"부위 {part} 장비 교환");
+                slotList[equippedIndex].equip = false;
                 slotList[newIndex].equip = true;
-                mainHandIndex = newIndex;
-                mainKey = newKey;
-                return prev;
+                equippedItems[part] = newIndex;
+                return equippedIndex;
             }
         }
-        // 부위 판별 - 서브
-        else if (ItemLogic.IsSamePart(subKey, newKey))
+        else
         {
-            if (subHandIndex == newIndex)
-            {
-                // 같은 슬롯 = 해제
-                Debug.Log("서브 해제");
-                slotList[subHandIndex].equip = false;
-                subHandIndex = -1;
-                subKey = 0; 
-                return newIndex;
-            }
-            else
-            {
-                // 다른 슬롯= 교체, 
-                // 기본 해제, 새로 장착
-                Debug.Log("서브 교환");
-                int prev = mainHandIndex;
-                slotList[subHandIndex].equip = false;
-                slotList[newIndex].equip = true;
-                subHandIndex = newIndex;
-                subKey = newKey;
-                return prev;
-            }
+            // 해당 부위가 비어있다면 새로 장착
+            Debug.Log($"부위 {part} 새 장착");
+            slotList[newIndex].equip = true;
+            equippedItems[part] = newIndex;
+            return newIndex;
         }
-        return -1;
     }
 }

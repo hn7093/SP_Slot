@@ -75,7 +75,7 @@ public class UIInventory : UIPage
             // UI 갱신
             ItemList[tempIndex].RefreshUI(player.Inventory.slotList[tempIndex]);
             // 교환 대비 이전 슬롯도 갱신
-            if(tempIndex != prev)
+            if(tempIndex != prev && prev != -1)
                 ItemList[prev].RefreshUI(player.Inventory.slotList[prev]);
         }
     }
