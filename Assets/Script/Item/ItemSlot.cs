@@ -6,4 +6,5 @@ public class ItemSlot
     public int key;
     public int count;
     public bool equip;
+    public bool maxStack;
 }

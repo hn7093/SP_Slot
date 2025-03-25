@@ -31,10 +31,10 @@ public class UIStatus : UIPage
     }
     public void Set(CharacterData data)
     {
-        attackText.text = data.attack.ToString();
-        defenseText.text = data.defense.ToString();
-        healthText.text = data.health.ToString();
-        criticalText.text = data.critical.ToString();
+        attackText.text = $"{data.attack}" + (data.EqAtk > 0 ? $"<color=#00FF00> + {data.EqAtk}</color>" : "");
+        defenseText.text = $"{data.defense}" + (data.EqDefense > 0 ? $"<color=#00FF00> + {data.EqDefense}</color>" : "");
+        healthText.text = $"{data.health}" + (data.EqHealth > 0 ? $"<color=#00FF00> + {data.EqHealth}</color>" : "");
+        criticalText.text = $"{data.critical}" + (data.EqCritical > 0 ? $"<color=#00FF00> + {data.EqCritical}</color>" : "");
     }
     public void Close()
     {

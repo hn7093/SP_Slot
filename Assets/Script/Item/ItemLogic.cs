@@ -1,7 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
+using System.Text;
 public static class ItemLogic
 {
     public static bool IsResource(int key)
@@ -21,13 +18,24 @@ public static class ItemLogic
     }
     public static bool IsSamePart(int firKey, int secKey)
     {
-        if(IsEquip(firKey) && IsEquip(secKey))
+        if (IsEquip(firKey) && IsEquip(secKey))
         {
-            int typeFir = firKey/1000;
-            int typeSec = secKey/1000;
+            int typeFir = firKey / 1000;
+            int typeSec = secKey / 1000;
             return typeFir == typeSec;
         }
         else
             return false;
+    }
+    public static string StatText(Item item)
+    {
+        StringBuilder sb = new StringBuilder();
+
+        if (item.health != 0) sb.AppendLine($"체력: {item.health}");
+        if (item.attack != 0) sb.AppendLine($"공격력: {item.attack}");
+        if (item.defense != 0) sb.AppendLine($"방어력: {item.defense}");
+        if (item.critical != 0) sb.AppendLine($"크리티컬: {item.critical}");
+
+        return sb.ToString().TrimEnd(); // 마지막 개행문자 제거
     }
 }

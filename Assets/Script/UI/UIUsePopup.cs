@@ -26,14 +26,13 @@ public class UIUsePopup : MonoBehaviour
     {
         // key로 아이템 정보 세팅
         itemImage.sprite = item.sprite;
-        string stat = "";
+        string stat = ItemLogic.StatText(item);
         string descript = item.descript;
         // 아이템 종류별로 버튼 세팅
         if(ItemLogic.IsConsumable(item.key))
         {
             useButton.gameObject.SetActive(true);
             useText.text = "사용하기";
-            
         }
         else if(ItemLogic.IsEquip(item.key))
         {

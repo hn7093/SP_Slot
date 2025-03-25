@@ -11,6 +11,7 @@ public enum Job
 [Serializable]
 public class CharacterData
 {
+    // 기본 스텟
     public int key;
     public Job job;
     public string characterName;
@@ -22,6 +23,12 @@ public class CharacterData
     public int defense;
     public int health;
     public int critical;
+
+    // 장비 스텟
+    public int EqAtk;
+    public int EqDefense;
+    public int EqHealth;
+    public int EqCritical;
 }
 [Serializable]
 public class Character
@@ -46,7 +53,7 @@ public class Character
         CharacterData.critical = data.critical;
 
         // 인벤토리 초기화
-        Inventory = new Inventory(maxSize);
+        Inventory = new Inventory(maxSize, this);
         for (int i = 0; i < maxSize; i++)
         {
             // 해당 칸에 저장된 정보가 있으면 불러오기
@@ -56,14 +63,22 @@ public class Character
                 ItemSlot savedItem = GameManager.Instance.ItemManager.savedItems[i];
                 if (savedItem != null)
                 {
-                    Additem(savedItem);
+                    AddItem(savedItem);
                 }
             }
         }
     }
-    public void Additem(ItemSlot savedItem)
+    public void AddItem(ItemSlot savedItem)
     {
-        Inventory.slotList[savedItem.index] = savedItem;
+        Inventory.AddItem(savedItem.index, savedItem);
+    }
+    public void AddItem(int key, int count)
+    {
+
+    }
+    private void AddItem(int slotIndex, int key, int count)
+    {
+
     }
     public void Consume(Item item, int index)
     {
@@ -75,28 +90,39 @@ public class Character
         // 개수 감소
         Inventory.slotList[index].count--;
     }
-    public int AutoEquip(Item item, int index)
+    public int AutoEquip(int index)
     {
+        // 스텟 적용
         if (Inventory.slotList[index].equip)
         {
-            // 해제
-            // 능력 적용
-            if (item.health != 0) CharacterData.health -= item.health;
-            if (item.attack != 0) CharacterData.attack -= item.attack;
-            if (item.defense != 0) CharacterData.defense -= item.defense;
-            if (item.critical != 0) CharacterData.critical -= item.critical;
-            
+            UnEquip(index);
         }
         else
         {
-            // 장착
-            // 능력 적용
-            if (item.health != 0) CharacterData.health += item.health;
-            if (item.attack != 0) CharacterData.attack += item.attack;
-            if (item.defense != 0) CharacterData.defense += item.defense;
-            if (item.critical != 0) CharacterData.critical += item.critical;
+            Equip(index);
         }
         // 장착/해제 적용, 바뀐 슬롯 인덱스 반환
-        return Inventory.AutoEquip(index);
+        int prev = Inventory.AutoEquip(index);
+        return prev;
+    }
+    public void Equip(int index)
+    {
+        int key = Inventory.slotList[index].key;
+        Item item = GameManager.Instance.ItemManager.ItemInfo[key];
+        // 장착
+        if (item.health != 0) CharacterData.EqHealth += item.health;
+        if (item.attack != 0) CharacterData.EqAtk += item.attack;
+        if (item.defense != 0) CharacterData.EqDefense += item.defense;
+        if (item.critical != 0) CharacterData.EqCritical += item.critical;
+    }
+    public void UnEquip(int index)
+    {
+        int key = Inventory.slotList[index].key;
+        Item item = GameManager.Instance.ItemManager.ItemInfo[key];
+        // 해제
+        if (item.health != 0) CharacterData.EqHealth -= item.health;
+        if (item.attack != 0) CharacterData.EqAtk -= item.attack;
+        if (item.defense != 0) CharacterData.EqDefense -= item.defense;
+        if (item.critical != 0) CharacterData.EqCritical -= item.critical;
     }
 }

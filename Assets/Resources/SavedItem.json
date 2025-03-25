@@ -11,9 +11,19 @@
       "count" : 1
     },
     {
+      "index" : 3,
+      "key": 2001,
+      "count" : 1
+    },
+    {
       "index" : 4,
       "key": 10000,
       "count" : 1
+    },
+    {
+      "index" : 5,
+      "key": 10000,
+      "count" : 15
     },
     {
       "index" : 7,

@@ -3,12 +3,18 @@ using System.Collections.Generic;
 public class Inventory
 {
     public Dictionary<int, ItemSlot> slotList;
+    private Character owner;
 
     // key: 부위, value: 슬롯 인덱스
     private Dictionary<int, int> equippedItems = new Dictionary<int, int>();
-    public Inventory(int size)
+    public Inventory(int size, Character owner)
     {
         slotList = new Dictionary<int, ItemSlot>(size);
+        this.owner = owner;
+    }
+    public void AddItem(int index, ItemSlot itemSlot)
+    {
+        slotList[index] = itemSlot;
     }
     public int AutoEquip(int newIndex)
     {
@@ -25,7 +31,6 @@ public class Inventory
             if (equippedIndex == newIndex)
             {
                 // 같은 슬롯이면 해제
-                Debug.Log($"부위 {part} 장비 해제");
                 slotList[equippedIndex].equip = false;
                 equippedItems.Remove(part);
                 return newIndex;
@@ -33,8 +38,8 @@ public class Inventory
             else
             {
                 // 다른 슬롯의 장비와 교체
-                Debug.Log($"부위 {part} 장비 교환");
                 slotList[equippedIndex].equip = false;
+                owner.UnEquip(equippedIndex);
                 slotList[newIndex].equip = true;
                 equippedItems[part] = newIndex;
                 return equippedIndex;
@@ -43,7 +48,6 @@ public class Inventory
         else
         {
             // 해당 부위가 비어있다면 새로 장착
-            Debug.Log($"부위 {part} 새 장착");
             slotList[newIndex].equip = true;
             equippedItems[part] = newIndex;
             return newIndex;

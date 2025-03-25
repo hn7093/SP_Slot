@@ -71,11 +71,11 @@ public class UIInventory : UIPage
         }
         else if (ItemLogic.IsEquip(item.key))
         {
-            int prev = GameManager.Instance.Player.AutoEquip(item, tempIndex);
+            int prev = GameManager.Instance.Player.AutoEquip(tempIndex);
             // UI 갱신
             ItemList[tempIndex].RefreshUI(player.Inventory.slotList[tempIndex]);
             // 교환 대비 이전 슬롯도 갱신
-            if(tempIndex != prev && prev != -1)
+            if (tempIndex != prev && prev != -1)
                 ItemList[prev].RefreshUI(player.Inventory.slotList[prev]);
         }
     }

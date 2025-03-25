@@ -37,12 +37,24 @@
       "descript": "적당한 무기의 방패"
     },
     {
+      "key": 2001,
+      "name": "고급 방패",
+      "maxStack": 1,
+      "spritePath": "Sprite/HightShield",
+      "attack": 0,
+      "health": 0,
+      "defense": 30,
+      "critical": 0,
+      "price": 10,
+      "descript": "방어력이 높은 고급 방패"
+    },
+    {
       "key": 10000,
       "name": "사과",
       "maxStack": 64,
       "spritePath": "Sprite/Apple",
       "attack": 0,
-      "health": 10,
+      "health": 3,
       "defense": 0,
       "critical": 0,
       "price": 5,

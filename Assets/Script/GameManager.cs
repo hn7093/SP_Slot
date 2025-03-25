@@ -30,8 +30,7 @@ public class GameManager : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Alpha9))
         {
-            Debug.Log(Player.Inventory.slotList.Count);
-            //foreach(UISlot )
+            //Player.Additem();
         }
     }
     public void SetPlayer(int key)
