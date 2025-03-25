@@ -16,13 +16,16 @@ public class ItemManager
             dataList[i].sprite = Resources.Load<Sprite>(dataList[i].spritePath);
             ItemInfo[dataList[i].key] = dataList[i];
         }
-        
+        Debug.Log($"아이템 불러오기 완료: {ItemInfo.Count}/{dataList.Count}");
+
         // 저장정보 불러오기
         List<ItemSlot> savedList = LoadJsonData<ItemSlot>("SavedItem");
         for (int i = 0; i < savedList.Count; i++)
         {
             savedItems[savedList[i].index] = savedList[i];
+            savedItems[savedList[i].index].item = ItemInfo[savedList[i].key];
         }
+        Debug.Log($"저장 정보 불러오기 완료: {savedItems.Count}/{savedList.Count}");
     }
 
     // 리소스에서 JSON 불러와 리스트로 반환

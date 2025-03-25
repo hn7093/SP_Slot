@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using UnityEngine;
 public enum Job
@@ -36,6 +37,7 @@ public class Character
     public CharacterData CharacterData { get; private set; }
     public Inventory Inventory { get; private set; }
     public static int maxSize = 20;
+    Dictionary<int, Item> ItemInfo;
     public Character(CharacterData data)
     {
         // 데이터 초기화
@@ -54,31 +56,49 @@ public class Character
 
         // 인벤토리 초기화
         Inventory = new Inventory(maxSize, this);
+        ItemInfo = GameManager.Instance.ItemManager.ItemInfo;
+        Dictionary<int, ItemSlot> savedItems = GameManager.Instance.ItemManager.savedItems;
         for (int i = 0; i < maxSize; i++)
         {
             // 해당 칸에 저장된 정보가 있으면 불러오기
-            if (GameManager.Instance.ItemManager.savedItems.ContainsKey(i))
+            if (savedItems.ContainsKey(i))
             {
                 // 저장된 정보 불러오기
-                ItemSlot savedItem = GameManager.Instance.ItemManager.savedItems[i];
+                ItemSlot savedItem = savedItems[i];
                 if (savedItem != null)
                 {
-                    AddItem(savedItem);
+                    SetItem(savedItem);
                 }
             }
         }
     }
-    public void AddItem(ItemSlot savedItem)
+    public void SetItem(ItemSlot savedItem)
     {
-        Inventory.AddItem(savedItem.index, savedItem);
+        Inventory.SetItemSlot(savedItem.index, savedItem);
     }
     public void AddItem(int key, int count)
     {
-
+        Item item = ItemInfo[key];
+        AddItem(item, count);
     }
-    private void AddItem(int slotIndex, int key, int count)
+    public void AddItem(Item item, int count)
     {
-
+        int remain = count;
+        while (remain > 0)
+        {
+            // 넣을 수 있는 공간 찾기
+            int slotIndex = Inventory.GetEmptyIndex(item.key, remain);
+            if (slotIndex != -1)
+            {
+                // 공간에 갯수만큼 추가
+                remain -= Inventory.AddItem(slotIndex, item, remain);
+            }
+            else
+            {
+                // 공간이 없으면 중단
+                return;
+            }
+        }
     }
     public void Consume(Item item, int index)
     {
@@ -88,7 +108,7 @@ public class Character
         if (item.critical != 0) CharacterData.critical += item.critical;
 
         // 개수 감소
-        Inventory.slotList[index].count--;
+        Inventory.UseItem(index, 1);
     }
     public int AutoEquip(int index)
     {
@@ -107,7 +127,7 @@ public class Character
     }
     public void Equip(int index)
     {
-        int key = Inventory.slotList[index].key;
+        int key = Inventory.slotList[index].item.key;
         Item item = GameManager.Instance.ItemManager.ItemInfo[key];
         // 장착
         if (item.health != 0) CharacterData.EqHealth += item.health;
@@ -117,7 +137,7 @@ public class Character
     }
     public void UnEquip(int index)
     {
-        int key = Inventory.slotList[index].key;
+        int key = Inventory.slotList[index].item.key;
         Item item = GameManager.Instance.ItemManager.ItemInfo[key];
         // 해제
         if (item.health != 0) CharacterData.EqHealth -= item.health;

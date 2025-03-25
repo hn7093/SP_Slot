@@ -29,6 +29,7 @@ public class UISlot : MonoBehaviour
         itemCount.text = count.ToString();
         itemImage.gameObject.SetActive(true);
         itemImage.sprite = item.sprite;
+
         // 장착 시 선 표시
         outline.enabled = IsEquip;
     }
@@ -37,6 +38,8 @@ public class UISlot : MonoBehaviour
         // 갱신
         count = itemSlot.count;
         itemCount.text = count.ToString();
+        itemImage.gameObject.SetActive(true);
+        itemImage.sprite = itemSlot.item.sprite;
         if (count <= 0)
         {
             itemImage.gameObject.SetActive(false);
@@ -45,5 +48,13 @@ public class UISlot : MonoBehaviour
         }
         // 장착 시 선 표시
         outline.enabled = itemSlot.equip;
+    }
+    public void SetEmptyUI(int index)
+    {
+        itemCount.text = "";
+        itemImage.gameObject.SetActive(false);
+        this.index = index;
+        key = 0;
+        outline.enabled = false;
     }
 }

@@ -51,7 +51,7 @@
     {
       "key": 10000,
       "name": "사과",
-      "maxStack": 64,
+      "maxStack": 16,
       "spritePath": "Sprite/Apple",
       "attack": 0,
       "health": 3,

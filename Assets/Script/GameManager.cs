@@ -26,13 +26,6 @@ public class GameManager : MonoBehaviour
         SetPlayer(1);
         UIManager.Instance.ActivateUIMainMenu(true);
     }
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Alpha9))
-        {
-            //Player.Additem();
-        }
-    }
     public void SetPlayer(int key)
     {
         string loadedText = Resources.Load<TextAsset>("PlayerData").text;

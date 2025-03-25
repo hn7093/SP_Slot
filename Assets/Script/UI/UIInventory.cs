@@ -24,9 +24,10 @@ public class UIInventory : UIPage
 
     void Start()
     {
+        // 초기화
         ItemList = new List<UISlot>(maxSize);
         player = GameManager.Instance.Player;
-
+        Dictionary<int, Item> ItemInfo = GameManager.Instance.ItemManager.ItemInfo;
         for (int i = 0; i < maxSize; i++)
         {
             var slotui = Instantiate(SlotPrefab, ContentParent);
@@ -38,12 +39,14 @@ public class UIInventory : UIPage
                 ItemSlot savedItem = player.Inventory.slotList[i];
                 if (savedItem != null)
                 {
-                    Item item = GameManager.Instance.ItemManager.ItemInfo[savedItem.key];
+                    Item item = savedItem.item;
                     ItemList[i].SetItem(i, item, savedItem.count, savedItem.equip);
                     ItemList[i].SetCallback(Show);
                 }
             }
         }
+        slotMaxText.text = maxSize.ToString();
+        slotNowText.text = player.Inventory.slotList.Count.ToString();
     }
     // 팝업 생성 호출
     private void Show(int index, int key)
@@ -65,9 +68,15 @@ public class UIInventory : UIPage
         // 종류별 사용
         if (ItemLogic.IsConsumable(item.key))
         {
+            // 현재 수
+            int remain = player.Inventory.slotList[tempIndex].count;
             GameManager.Instance.Player.Consume(item, tempIndex);
-            // UI 갱신
-            ItemList[tempIndex].RefreshUI(player.Inventory.slotList[tempIndex]);
+            // UI 갱신, 남은갯수에 따라 초기화
+            Debug.Log(remain);
+            if (remain > 1)
+                ItemList[tempIndex].RefreshUI(player.Inventory.slotList[tempIndex]);
+            else
+                ItemList[tempIndex].SetEmptyUI(tempIndex);
         }
         else if (ItemLogic.IsEquip(item.key))
         {
@@ -83,8 +92,20 @@ public class UIInventory : UIPage
     {
         //animator.Play("UIInventory In");
         SetActivate(true);
-        slotMaxText.text = maxSize.ToString();
-        slotNowText.text = GameManager.Instance.ItemManager.savedItems.Count.ToString();
+
+
+        // 정보 불러오기 - 초기화 후
+        if (player != null)
+        {
+            for (int i = 0; i < maxSize; i++)
+            {
+                if (player.Inventory.slotList.ContainsKey(i))
+                    ItemList[i].RefreshUI(player.Inventory.slotList[i]);
+            }
+            slotMaxText.text = maxSize.ToString();
+            slotNowText.text = player.Inventory.slotList.Count.ToString();
+        }
+
     }
 
     public override void Exit()
@@ -100,66 +121,5 @@ public class UIInventory : UIPage
     public void Close()
     {
         UIManager.Instance.UIMainMenu.BackPage();
-    }
-    // 아이템 추가 - 키, 수
-    public bool AddItem(int key, int amount = 1)
-    {
-        if (amount < 0)
-        {
-            Debug.LogError("오류 : 갯수가 0이하");
-            return false;
-        }
-        if (key < 0)
-        {
-            Debug.LogError("오류 : 인덱스 0보다 작음");
-            return false;
-        }
-        Item itemInfo = null;//DataManager.Instance.ItemDataLoader.GetByKey(key);
-        if (itemInfo != null)
-        {
-            // 인벤토리에서 검색
-            int remain = amount;
-            for (int i = 0; i < ItemList.Count; i++)
-            {
-                if (ItemList[i] != null && ItemList[i].count > 0 && ItemList[i].key == key)
-                {
-                    // 아직 maxStack만큼 안 찼으면
-                    if (ItemList[i].count < itemInfo.maxStack)
-                    {
-                        Debug.Log($"아이템 {itemInfo.name}이(가) 인벤토리 슬롯 {i}에 겹쳐 추가");
-                        ItemList[i].count += amount;
-                        return true;
-                    }
-                }
-            }
-
-
-            // 기존 아이템을 찾지 못했거나 모두 가득 찼으면 빈슬롯 찾기
-            bool addedToEmptySlot = false;
-            // 인벤부터 찾기
-            for (int i = 0; i < ItemList.Count; i++)
-            {
-                if (ItemList[i] != null)
-                {
-                    //ItemList[i] = new ItemSlot(item, amount);
-                    Debug.Log($"아이템 {itemInfo.name}이(가) 인벤토리 슬롯 {i}에 추가됨");
-                    addedToEmptySlot = true;
-                    return true;
-                }
-            }
-
-            // 빈슬롯 없이 모두 가득 찼으면
-            if (!addedToEmptySlot)
-            {
-                Debug.LogError("오류 : 인벤토리가 가득 참");
-                return false;
-            }
-            return false; ;
-        }
-        else
-        {
-            Debug.LogError($"해당 정보 없음 키 : {key}");
-            return false;
-        }
     }
 }
